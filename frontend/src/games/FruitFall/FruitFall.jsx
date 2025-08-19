@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ASSETS
 // animals
@@ -8,7 +7,7 @@ import giraffe from "../../assets/FruitFall/animals/Round/giraffe.png";
 import elephant from "../../assets/FruitFall/animals/Round/elephant.png";
 import hippo from "../../assets/FruitFall/animals/Round/hippo.png";
 import panda from "../../assets/FruitFall/animals/Round/panda.png";
-import parrot from "../../assets/FruitFall/animals/Round/parrot.png";
+import owl from "../../assets/FruitFall/animals/Purple Owl/sleeping owl.gif";
 import penguin from "../../assets/FruitFall/animals/Round/penguin.png";
 import pig from "../../assets/FruitFall/animals/Round/pig.png";
 import rabbit from "../../assets/FruitFall/animals/Round/rabbit.png";
@@ -26,30 +25,82 @@ import grape from "../../assets/FruitFall/fruits/normal/grape.png";
 
 import basket from "../../assets/FruitFall/props/wooden-bucket.png";
 
+const introText1 = `Deep in the heart of a forest lives Ollie the Owl. 
+Ollie is wise and kind, but he has a problem… he just loves to nap! 
+Every time he dozes off, the forest animals can’t hear his bedtime stories, 
+and they really want him awake.`;
+
+const introText2 = `The only way to wake Ollie is by feeding him his favourite fruits! 
+Each fruit gives him a little more energy until he finally opens his eyes, 
+stretches his wings, and hoots happily.`;
+
 const FruitFall = () => {
+    const [showSecondParagraph, setShowSecondParagraph] = useState(false);
+
+    // Speak the first paragraph on mount
+    useEffect(() => {
+        const utter = new window.SpeechSynthesisUtterance(introText1);
+        window.speechSynthesis.speak(utter);
+
+        const timer = setTimeout(() => {
+            setShowSecondParagraph(true);
+        }, 5000);
+
+        return () => {
+            clearTimeout(timer);
+            window.speechSynthesis.cancel();
+        };
+    }, []);
+
+    // Speak the second paragraph when it appears
+    useEffect(() => {
+        if (showSecondParagraph) {
+            const utter = new window.SpeechSynthesisUtterance(introText2);
+            window.speechSynthesis.speak(utter);
+        }
+    }, [showSecondParagraph]);
+
     return (
-        <div className="flex flex-col h-screen justify-center">
-            <motion.div
+        <div className="flex flex-col h-screen justify-center items-center relative">
+            <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-90 border-2 border-gray-300 rounded-lg shadow-lg px-8 py-6 w-[500px] text-xl text-center">
+                <AnimatePresence mode="wait">
+                    {!showSecondParagraph && (
+                        <motion.p
+                            key="intro1"
+                            initial={{ opacity: 1 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.7 }}
+                            className="font-normal text-lg"
+                        >
+                            {introText1}
+                        </motion.p>
+                    )}
+                    {showSecondParagraph && (
+                        <motion.p
+                            key="intro2"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.7 }}
+                            className="font-normal text-lg"
+                        >
+                            {introText2}
+                        </motion.p>
+                    )}
+                </AnimatePresence>
+            </div>
+            <motion.img
                 initial={{ x: -1000 }}
                 animate={{ x: 0 }}
                 transition={{
                     delay: 1,
                     duration: 0.75,
                 }}
-                className="flex flex-row items-end gap-4"
-            >
-                <div className="relative">
-                    <img src={parrot} alt="animal" className="w-32" />
-                    {/* Speech bubble */}
-                    <div className="absolute -top-16 left-full bg-white border border-gray-300 rounded-xl px-8 py-1 shadow text-sm">
-                        <p>I want 3 + 2 🍎</p>
-                        <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white border-gray-300 rotate-45"></div>
-                    </div>
-                </div>
-                <img src={basket} alt="basket" className="w-24" />
-            </motion.div>
+                src={owl} alt="animal"
+                className="w-80 mt-40"
+            />
         </div>
-    )
-}
-
+    );
+};
+            
 export default FruitFall;
