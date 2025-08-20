@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import safari from "../assets/FruitFall/environment/background/safari-background.jpg";
+import React from "react";
 
 const levels = [
   1, 2, 3, 4, 5
@@ -6,8 +8,15 @@ const levels = [
 
 const LevelSelection = ({ onSelect }) => {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+    
+    <div
+      className="flex justify-center items-center h-screen w-screen scale-100 bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage: `url(${safari})` 
+
+      }}
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 ">
         {levels.map(level => (
           <motion.div
             key={level}

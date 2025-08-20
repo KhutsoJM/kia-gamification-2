@@ -50,22 +50,12 @@ const FruitFall = () => {
     const [showCongratulations, setShowCongratulations] = useState(false);
 
     const levelData = levels[currentLevel];
-
+    console.log(`Done: ${showCongratulations}`);
     // If all levels are completed and finish button pressed, show final message and congratulations gif only
-    if (showCongratulations) {
-        return (
-            <div className="flex flex-col h-screen justify-center items-center bg-white">
-                <h1 className="text-2xl font-bold mb-8 text-center px-4">
-                    {finalText}
-                </h1>
-                <img
-                    src={Congratulations}
-                    alt="Ollie the Owl"
-                    className="w-80"
-                />
-            </div>
-        );
-    }
+    
+
+
+
 
     // If all levels are completed but finish button not pressed yet
     if (!levelData) {
@@ -157,11 +147,26 @@ const FruitFall = () => {
         }
     };
 
+    if (showCongratulations) {
+        return (
+            <div className="flex flex-col h-screen justify-center items-center bg-white">
+                <h1 className="text-2xl font-bold mb-8 text-center px-4">
+                    {finalText}
+                </h1>
+                <img
+                    src={Congratulations}
+                    alt="Ollie the Owl"
+                    className="w-80"
+                />
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col h-screen justify-center items-center relative">
             <div className="absolute top-47 left-1/2 transform -translate-x-1/2 flex flex-row items-center bg-white bg-opacity-90 border-2 border-gray-300 rounded-lg shadow-lg px-8 py-6 w-[500px] text-xl text-center">
                 <div className="flex-1">
-                    <AnimatePresence mode="wait">
+                    <AnimatePresence>
                         {!showSecondParagraph && (
                             <motion.p
                                 key="intro1"
@@ -190,7 +195,13 @@ const FruitFall = () => {
                 {isExcited && (
                     <button
                         className="ml-6 px-6 py-3 bg-green-600 text-white rounded-lg shadow font-bold text-lg hover:bg-green-700 transition"
-                        onClick={goToNextLevel}
+                        onClick={() => {
+                            if (currentLevel < levels.length - 1) {
+                                setCurrentLevel(currentLevel + 1);
+                            } else {
+                                setShowCongratulations(true);
+                            }
+                        }}
                     >
                         {currentLevel < levels.length - 1
                             ? `Level ${currentLevel + 2}`
