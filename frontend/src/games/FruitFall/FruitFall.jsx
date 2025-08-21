@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaPlus, FaMinus, FaCheck } from "react-icons/fa";
 
 import { levels } from "./levels";
+import { playSound } from "../../utils/sounds";
 
 
 // ASSETS
@@ -143,6 +144,12 @@ const FruitFall = () => {
 
 
     const handleFruitCountChange = (fruitName, amount) => {
+        if (fruitsCount[fruitName] > 0 || amount > 0) {
+            playSound('click', 0.5);
+        } else {
+            playSound('click2', 1, 1);
+        }
+
         setFruitsCount(prevCounts => ({
             ...prevCounts,
             [fruitName]: Math.max(0, prevCounts[fruitName] + amount) // Ensure count doesn't go below 0
@@ -413,6 +420,9 @@ const FruitFall = () => {
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}
                                     onDragEnd={(e, info) => handleDrop(info.point, fruit)}
+                                    onTapStart={() => {
+                                        playSound('bubbleClick2', 1, 0.75)
+                                    }}
                                 />
 
                                 {/* Count badge */}
