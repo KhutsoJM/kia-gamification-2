@@ -98,6 +98,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<AppContent />} />
           <Route path="/fruitfall" element={<FruitFall />} />
+          <Route path="/category" element={<CategorySelection />} />  {/* 👈 route for LevelSelection */}
         </Routes>
       </main>
     </Router>

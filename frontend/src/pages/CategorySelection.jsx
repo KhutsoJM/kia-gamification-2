@@ -3,25 +3,29 @@ import { motion } from "framer-motion";
 const levelCategories = [
     {
         name: "Basic Maths",
-        description: "Explore the great forest and discover nature words!",
+        description: "Explore the great forest and feed Ollie the Owl!",
         image: "🌲",
         bgColor: "bg-green-400",
+        totalLevels: 5
     },
     {
         name: "BODMAS",
         description: "Navigate the busy city and learn urban vocabulary!",
         image: "🌆",
         bgColor: "bg-blue-400",
+        totalLevels: 5
     },
     {
         name: "Space Odyssey",
         description: "Blast off to space and explore cosmic words!",
         image: "☄️",
         bgColor: "bg-slate-400",
+        totalLevels: 5
     }
 ]
 
-const CategorySelection = ({onStart}) => {
+const CategorySelection = ({onStart}) => 
+    {
     return (
         <>
             <h1 className="text-6xl mb-8 font-bold text-slate-800">

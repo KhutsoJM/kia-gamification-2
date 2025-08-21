@@ -5,7 +5,7 @@ export const levels = [
             { name: "A-pple", count: 1 },
         ],
         introText1: `Deep in the heart of a forest lives Ollie the Owl. Ollie is wise and kind, but he has a problem… he just loves to nap!`,
-        introText2: `The only way to wake Ollie is by feeding him his favourite fruits! Each fruit gives him a little more energy until he finally opens his eyes, stretches his wings, and hoots happily.`,
+        introText2: `The only way to wake Ollie is by feeding him his favourite fruits! Each fruit gives him a little more energy.`,
     },
     {
         requiredFruits: [
@@ -13,7 +13,7 @@ export const levels = [
             { name: "Gr-ape", count: 2 },
         ],
         introText1: `Ollie is snoozing again! The forest is quiet and everyone misses his cheerful hoots. Can you help wake him up this time?`,
-        introText2: `Drag 3 oranges and 2 grapes into the basket to give Ollie a fruity boost. Let’s see if he’ll open his eyes and greet his friends!`,
+        introText2: `Drag 3 🍊 and 2 🍇 into the basket to give Ollie a fruity boost.`
     },
     {
         requiredFruits: [
@@ -21,7 +21,7 @@ export const levels = [
             { name: "Che-rry", count: 2 },
         ],
         introText1: `Ollie couldn’t resist another nap! The animals tiptoe around, hoping you’ll help wake him up once more.`,
-        introText2: `Find 2 watermelons and 2 cherries for Ollie. Maybe this delicious snack will finally get him out of bed!`,
+        introText2: `Find 2 🍉 and 2 🍒 for Ollie. Maybe this delicious snack will finally get him out of bed!`,
     },
     {
         requiredFruits: [

@@ -11,3 +11,10 @@
   background: radial-gradient(circle at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 80%);
 }
 
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* disables scrollbars */
+  height: 100vh;    /* viewport height only */
+  width: 100vw;     /* viewport width only */
+}

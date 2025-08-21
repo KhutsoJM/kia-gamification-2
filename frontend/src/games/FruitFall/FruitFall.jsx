@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { levels } from "./levels";
+import { useNavigate } from "react-router-dom";
 import apple from "../../assets/FruitFall/fruits/normal/apple.png";
 import banana from "../../assets/FruitFall/fruits/normal/banana.png";
 import blueberry from "../../assets/FruitFall/fruits/normal/blueberry.png";
@@ -13,6 +14,8 @@ import basket from "../../assets/FruitFall/props/wooden-bucket.png";
 import excitedOwl from "../../assets/FruitFall/animals/Purple Owl/excited owl.gif";
 import owl from "../../assets/FruitFall/animals/Purple Owl/sleeping owl.gif";
 import Congratulations from "../../assets/FruitFall/animals/Purple Owl/congratulations.gif";
+import owlBadge from "../../assets/FruitFall/animals/Purple Owl/owlBadge.png";
+import safari from "C:/Users/Kidsi/kia-gamification-2/frontend/src/assets/FruitFall/environment/background/safari-background.jpg";
 
 // Map fruit names to images
 const fruitImages = {
@@ -38,14 +41,17 @@ const fruitList = [
     { name: "Gr-ape", img: grape },
 ];
 
+
+
 const finalText =
-    "Hoot hoot! You’ve helped Ollie wake up every time. The forest is full of happy animals and Ollie is wide awake, ready to tell his best stories. Congratulations!";
+    "Hoot hoot! You’ve helped Ollie wake up every time. Congratulations!";
 
 const FruitFall = () => {
     const [currentLevel, setCurrentLevel] = useState(0);
     const [showSecondParagraph, setShowSecondParagraph] = useState(false);
     const [showSpeechBubble, setShowSpeechBubble] = useState(false);
     const [basketFruits, setBasketFruits] = useState([]);
+    const [basketMessage, setBasketMessage] = useState("");
     const [isExcited, setIsExcited] = useState(false);
     const [showCongratulations, setShowCongratulations] = useState(false);
 
@@ -60,7 +66,8 @@ const FruitFall = () => {
     // If all levels are completed but finish button not pressed yet
     if (!levelData) {
         return (
-            <div className="flex flex-col h-screen justify-center items-center bg-white">
+            <div className="flex flex-col h-screen justify-center items-center bg-cover bg-center bg-no-repeat"
+>
                 <h1 className="text-2xl font-bold mb-8 text-center px-4">
                     {finalText}
                 </h1>
@@ -103,13 +110,7 @@ const FruitFall = () => {
         }
     }, [showSecondParagraph, introText2]);
 
-    // Show speech bubble after basket and fruits appear
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setShowSpeechBubble(true);
-        }, 2000);
-        return () => clearTimeout(timer);
-    }, [currentLevel]);
+
 
     // Drag and drop handlers
     const handleDragStart = (e, fruit) => {
@@ -138,7 +139,27 @@ const FruitFall = () => {
         setIsExcited(matches);
     }, [basketFruits, requiredFruits]);
 
+    const handleDropFruit = (e) => {
+    e.preventDefault();
+    const fruit = JSON.parse(e.dataTransfer.getData("fruit"));
+
+    // Check if the fruit is required for this level
+    const isRequired = requiredFruits.some(req => req.name === fruit.name);
+
+    if (isRequired) {
+        setBasketFruits((prev) => [...prev, fruit]);
+        setBasketMessage(""); // clear message if correct
+    } else {
+        setBasketMessage(`You’re learning! That’s not the one, try again.`); // show message if wrong fruit
+
+        // Remove message after 2 seconds
+        setTimeout(() => setBasketMessage(""), 2000);
+    }
+
+};
+
     // Move to next level or show congratulations
+
     const goToNextLevel = () => {
         if (currentLevel < levels.length - 1) {
             setCurrentLevel(currentLevel + 1);
@@ -146,91 +167,147 @@ const FruitFall = () => {
             setShowCongratulations(true);
         }
     };
+    
+  
+  const navigate = useNavigate();
 
-    if (showCongratulations) {
+    if (showCongratulations) 
+        
         return (
-            <div className="flex flex-col h-screen justify-center items-center bg-white">
-                <h1 className="text-2xl font-bold mb-8 text-center px-4">
-                    {finalText}
-                </h1>
-                <img
-                    src={Congratulations}
-                    alt="Ollie the Owl"
-                    className="w-80"
-                />
-            </div>
-        );
-    }
+        <div className="flex flex-col h-screen justify-center items-center w-screen scale-100 bg-cover bg-center bg-no-repeat"
+            style={{
+                        backgroundImage: `url(${safari})` 
+                
+                      }}
+            >
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ scale: 1, rotate: 360, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="flex flex-col items-center"
+        >
+            
+            <img
+                src={owlBadge}
+                alt="Ollie the Owl Badge"
+                className="w-80"
+            />
+            <h1 className="text-2xl font-bold mb-4 text-center px-4">
+                {finalText}
+            </h1>
+            <button
+                onClick={() => navigate("/category")}
+                className="x-10 py-5 bg-purple-400 text-white rounded-xl shadow font-bold text-lg hover:bg-purple-500 transition"
+                >
+                Choose another adventure
+            </button>
+        </motion.div>
+        </div>
+    );
+    
 
     return (
         <div className="flex flex-col h-screen justify-center items-center relative">
-            <div className="absolute top-47 left-1/2 transform -translate-x-1/2 flex flex-row items-center bg-white bg-opacity-90 border-2 border-gray-300 rounded-lg shadow-lg px-8 py-6 w-[500px] text-xl text-center">
-                <div className="flex-1">
-                    <AnimatePresence>
-                        {!showSecondParagraph && (
-                            <motion.p
-                                key="intro1"
-                                initial={{ opacity: 1 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.7 }}
-                                className="font-normal text-lg"
-                            >
-                                {introText1}
-                            </motion.p>
-                        )}
-                        {showSecondParagraph && (
-                            <motion.p
-                                key="intro2"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.7 }}
-                                className="font-normal text-lg"
-                            >
-                                {introText2}
-                            </motion.p>
-                        )}
-                    </AnimatePresence>
-                </div>
+            <div className="absolute top-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center bg-white bg-opacity-90 border-2 border-gray-300 rounded-lg shadow-lg px-8 py-6 w-[500px] text-xl text-center">
+                <AnimatePresence>
+                    {!showSecondParagraph && (
+                    <motion.p
+                        key="intro1"
+                        initial={{ opacity: 1 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.7 }}
+                        className="font-normal text-lg"
+                    >
+                        {introText1} 
+                    </motion.p>
+                    )}
+                    {showSecondParagraph && (
+                    <motion.p
+                        key="intro2"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.7 }}
+                        className="flex flex-row justify-center items-center space-x-4"
+                    >
+                        
+                        {requiredFruits.map(fruit => (
+                        <span key={fruit.name} className="flex flex-col items-center">
+                            <img
+                                src={fruitImages[fruit.name]} // get image from mapping
+                                alt={fruit.name}
+                                className="w-10 h-10"          // adjust size as needed
+                            /> 
+                        
+                            <span className="flex font-bold">{fruit.count}</span>
+                        </span>
+                        ))}
+                    </motion.p>
+                    )}
+                </AnimatePresence>
+
                 {isExcited && (
                     <button
-                        className="ml-6 px-6 py-3 bg-green-600 text-white rounded-lg shadow font-bold text-lg hover:bg-green-700 transition"
-                        onClick={() => {
-                            if (currentLevel < levels.length - 1) {
-                                setCurrentLevel(currentLevel + 1);
-                            } else {
-                                setShowCongratulations(true);
-                            }
-                        }}
+                    className="mt-4 px-6 py-3 bg-green-600 text-white rounded-lg shadow font-bold text-lg hover:bg-green-700 transition"
+                    onClick={goToNextLevel}
                     >
-                        {currentLevel < levels.length - 1
-                            ? `Level ${currentLevel + 2}`
-                            : "Finish"}
+                    {currentLevel < levels.length - 1 ? `Level ${currentLevel + 2}` : "Finish"}
                     </button>
                 )}
             </div>
-            <div className="flex flex-row items-end mt-40 gap-8">
-                {/* Owl and speech bubble */}
+        
+            {/* Floating fruits on the screen */}
+            <div className="overflow-hidden">
+                <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-10">
+                    {[...Array(3)].map((_, repeatIndex) => (   //  repeat 3 times
+                        fruitList.map((fruit, idx) => {
+                        const fruitSize = 80; // px
+                        const maxX = window.innerWidth - fruitSize;;
+                        const minY = window.innerHeight / 2 + 100; // start just below the owl
+                        const maxY = window.innerHeight - fruitSize - 20; // stay above the bottom edge
+
+
+                        return (
+                            <motion.img
+                            key={`${fruit.name}-${repeatIndex}-${idx}`}
+                            src={fruit.img}
+                            alt={fruit.name}
+                            className="w-20 absolute cursor-grab pointer-events-auto"
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, fruit)}
+                            initial={{
+                                x: Math.random() * maxX,
+                                y: minY + Math.random() * (maxY - minY),
+                            }}
+                            animate={{
+                                y: [
+                                minY + Math.random() * (maxY - minY),
+                                minY + Math.random() * (maxY - minY),
+                                minY + Math.random() * (maxY - minY),
+                            ],
+                                x: [
+                                Math.random() * maxX,  // random horizontal position 1
+                                Math.random() * maxX,  // random horizontal position 2
+                                Math.random() * maxX,  // random horizontal position 3
+                            ],
+                            }}
+                            transition={{
+                                duration: 6 + Math.random() * 3,
+                                repeat: Infinity,
+                                repeatType: "mirror",
+                                ease: "easeInOut",
+                            }}
+                            />
+                        );
+                        })
+                    ))}
+                </div>
+            </div>
+                
+            <div className="flex flex-row items-end justify-between w-full px-4">
+                {/* Owl */}
                 <div className="relative flex flex-col items-center">
-                    {showSpeechBubble && (
-                        <div className="absolute -top-0 left-1/2 -translate-x-1/2 z-10">
-                            <div className="bg-white border border-gray-400 rounded-2xl px-4 py-2 shadow-lg flex flex-row items-center min-w-[200px] min-h-[100px]">
-                                {requiredFruits.map((fruit) => (
-                                    <React.Fragment key={fruit.name}>
-                                        <img
-                                            src={fruitImages[fruit.name]}
-                                            alt={fruit.name}
-                                            className="w-12 mx-1"
-                                        />
-                                        <span className="font-bold text-base mx-1">
-                                            x{fruit.count}
-                                        </span>
-                                    </React.Fragment>
-                                ))}
-                            </div>
-                            <div className="w-0 h-0 border-t-[14px] border-t-white border-x-[10px] border-x-transparent mx-auto"></div>
-                        </div>
-                    )}
+                    
                     <motion.img
                         initial={{ x: -1000 }}
                         animate={{ x: 0 }}
@@ -240,11 +317,11 @@ const FruitFall = () => {
                         }}
                         src={isExcited ? excitedOwl : owl}
                         alt="animal"
-                        className="w-80 mt-40"
+                        className="w-80 mt=40"
                     />
                 </div>
                 {/* Basket with drop area */}
-                <div className="relative flex flex-col items-center">
+                <div className="relative flex flex-col items-center mb-10">
                     <motion.img
                         initial={{ x: 1000 }}
                         animate={{ x: 0 }}
@@ -255,7 +332,7 @@ const FruitFall = () => {
                         src={basket}
                         alt="basket"
                         className="w-50"
-                        onDrop={handleDrop}
+                        onDrop={handleDropFruit}
                         onDragOver={handleDragOver}
                         style={{ cursor: "pointer" }}
                     />
@@ -270,23 +347,14 @@ const FruitFall = () => {
                             />
                         ))}
                     </div>
+                    {/* Show message if wrong fruit */}
+                        {basketMessage && (
+                            <div className="text-orange-400 font-bold mb-1 text-sm">
+                                {basketMessage}
+                            </div>
+                        )}
                 </div>
-                {/* Fruits next to the basket */}
-                <div className="flex flex-row gap-4 ml-4">
-                    {fruitList.map((fruit) => (
-                        <div className="flex flex-col items-center" key={fruit.name}>
-                            <img
-                                src={fruit.img}
-                                alt={fruit.name}
-                                className="w-20"
-                                draggable
-                                onDragStart={(e) => handleDragStart(e, fruit)}
-                                style={{ cursor: "grab" }}
-                            />
-                            <span className="text-sm mt-1">{fruit.name}</span>
-                        </div>
-                    ))}
-                </div>
+                
             </div>
         </div>
     );
