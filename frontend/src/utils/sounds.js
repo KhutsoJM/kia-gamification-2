@@ -1,3 +1,11 @@
+// Import the sound function "playSound" from the utils
+// This function is used to play sound effects in the FruitFall game
+// Example: playSound('click') to play a click sound
+// Example: playSound('bubbleClick', 0.5) to play a click sound at half volume
+// Example: playSound('click', 0.5, 0.75) to play a click sound at half volume and 0.75 speed
+// import more sounds as needed
+
+
 import { Howl } from "howler";
 
 // Sound effects for the FruitFall game
