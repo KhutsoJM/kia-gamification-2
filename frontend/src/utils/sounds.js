@@ -1,12 +1,11 @@
 import { Howl } from "howler";
 
 // Sound effects for the FruitFall game
-import click from "./sounds/click-1.wav";
-import click2 from "./sounds/click-2.mp3";
-import bubbleClick from "./sounds/bubble-1.mp3";
-import bubbleClick2 from "./sounds/bubble-2.mp3";
+import click from "../assets/FruitFall/sounds/click-1.wav"
+import click2 from "../assets/FruitFall/sounds/click-2.mp3";
+import bubbleClick from "../assets/FruitFall/sounds/bubble-1.mp3";
+import bubbleClick2 from "../assets/FruitFall/sounds/bubble-2.mp3";
 
-import fruitClick from "./sounds/pop-2.mp3";
 
 const sounds = {
     click: new Howl({ src: [click], volume: 1 }),
