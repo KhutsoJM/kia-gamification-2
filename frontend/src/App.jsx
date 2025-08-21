@@ -34,6 +34,7 @@ const AppContent = () => {
         className="fixed top-0 left-0 w-screen h-screen pointer-events-none z-0"
         style={{
           background: "radial-gradient(circle at center, rgba(0,128,0,0.1) 0%, rgba(0,128,0,0.4) 80%)",
+          // background: l"inear-gradient(to bottom, #b0f4c1, #80e0a0)";
         }}
         animate={{
           background: [

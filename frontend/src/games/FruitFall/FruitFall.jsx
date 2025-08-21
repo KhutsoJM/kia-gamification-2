@@ -360,4 +360,5 @@ const FruitFall = () => {
     );
 };
 
+
 export default FruitFall;
