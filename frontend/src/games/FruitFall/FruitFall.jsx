@@ -35,13 +35,17 @@ const fruits = [
     { name: "raspberry", src: raspberry },
     { name: "banana", src: banana },
     { name: "blueberry", src: blueberry },
+    { name: "orange", src: orange },
+    { name: "watermelon", src: watermelon },
+    { name: "grape", src: grape },
+    { name: "cherry", src: cherry },
 ]
 
 // Requests: store as an object with an equation for dyscalculia support
-const requests = {
-    apple: { equation: '3 + 2', required: 5 },
-    banana: { equation: '6 - 4', required: 2 },
-};
+// const requests = {
+//     apple: { equation: '3 + 2', required: 5, fruit: "🍎" },
+//     banana: { equation: '6 - 4', required: 2, fruit: "🍌" },
+// };
 
 
 const introText1 = `Deep in the heart of a forest lives Ollie the Owl. 
@@ -59,6 +63,7 @@ const FruitFall = () => {
     const [startGame, setStartGame] = useState(false);
     const [isFruitsVisible, setIsFruitsVisible] = useState(false);
     const [showRequests, setShowRequests] = useState(false);
+    const [isGameFinished, setIsGameFinished] = useState(false);
 
     // basket/drop handling
     const basketRef = useRef(null);
@@ -75,6 +80,10 @@ const FruitFall = () => {
         raspberry: 0,
         banana: 0,
         blueberry: 0,
+        orange: 0,
+        watermelon: 0,
+        grape: 0,
+        cherry: 0,
     })
 
     const level = levels[levelIndex];
@@ -82,11 +91,18 @@ const FruitFall = () => {
     function goToNextLevel() {
         if (levelIndex < levels.length - 1) {
             setLevelIndex(levelIndex + 1);
+            // Reset basket counts etc
+            setBasketCounts({});
+            setFruitsCount({
+                apple: 0, raspberry: 0, banana: 0, blueberry: 0,
+                orange: 0, watermelon: 0, grape: 0, cherry: 0
+            });
+            setFlyingFruits([]);
         } else {
-            // game finished
+            // Last level finished
+            setIsGameFinished(true);
         }
     }
-
     useEffect(() => {
         loadLevel(levelIndex);
     }, [levelIndex]);
@@ -136,14 +152,20 @@ const FruitFall = () => {
     const loadLevel = (index) => {
         const level = levels[index];
         if (!level) return;
-
     }
 
     // layout constants for the fruit box
     const ITEM_DISPLAY_WIDTH = 160; // px per fruit (includes gap)
     const containerWidth = fruits.length * ITEM_DISPLAY_WIDTH + 32; // extra padding
 
+    // let requests = levels[levelIndex].requests;
 
+    let requests = Object.fromEntries(
+        levels[levelIndex].requests.map(r => [
+            r.fruit,
+            { expression: r.expression, emoji: r.emoji, required: r.required }
+        ])
+    );
 
     const allRequestsSatisfied = Object.entries(requests).every(
         ([name, r]) => (basketCounts[name] || 0) >= r.required
@@ -304,8 +326,8 @@ const FruitFall = () => {
                         const satisfied = have >= r.required;
                         return (
                             <div key={name} className="flex items-center justify-between mb-4">
-                                <div className="text-2xl bg-green-300 p-2 rounded-md w-full">
-                                    {r.equation} = ?
+                                <div className="text-2xl bg-green-300 p-2 rounded-md w-full cursor-pointer">
+                                    {r.expression} {r.emoji}
                                 </div>
                                 <div className="w-8 ml-3 flex items-center justify-center">
                                     {satisfied && (
@@ -320,7 +342,7 @@ const FruitFall = () => {
                 </motion.div>
             </motion.div>
 
-            {allRequestsSatisfied && (
+            {allRequestsSatisfied && !isGameFinished && (
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -329,7 +351,7 @@ const FruitFall = () => {
                     <h2 className="text-4xl font-bold mb-4">You did it! 🎉</h2>
                     <button
                         onClick={() => {
-                            setFruitsCount({ apple: 0, raspberry: 0, banana: 0, blueberry: 0 });
+                            setFruitsCount({ apple: 0, raspberry: 0, banana: 0, blueberry: 0, orange: 0, watermelon: 0, grape: 0, cherry: 0 });
                             setBasketCounts({});
                             setFlyingFruits([]);
                             goToNextLevel();
@@ -337,6 +359,23 @@ const FruitFall = () => {
                         className="px-6 py-3 bg-teal-500 text-white rounded-lg shadow-lg hover:bg-teal-600"
                     >
                         Next Level →
+                    </button>
+                </motion.div>
+            )}
+
+            {isGameFinished && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="absolute h-screen w-screen flex flex-col items-center justify-center bg-teal-400 bg-opacity-90 z-50"
+                >
+                    <h2 className="text-5xl font-bold mb-6 text-yellow-300">Congratulations! 🎉</h2>
+                    <p className="text-xl mb-6">You completed all levels!</p>
+                    <button
+                        onClick={() => window.location.reload()} // or navigate to main menu
+                        className="px-8 py-4 bg-yellow-500 text-white rounded-full shadow-lg hover:bg-yellow-600 text-xl"
+                    >
+                        Play Again
                     </button>
                 </motion.div>
             )}
