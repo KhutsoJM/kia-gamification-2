@@ -104,6 +104,11 @@ const FruitFall = () => {
             setIsGameFinished(true);
         }
     }
+
+    useEffect(() => {
+        
+    }, []);
+    
     useEffect(() => {
         loadLevel(levelIndex);
     }, [levelIndex]);
@@ -124,7 +129,7 @@ const FruitFall = () => {
                         setShowRequests(true);
                     }, 2000);
                 }, 3000);
-            }, 13500)
+            }, 13500);
         }, 5000);
 
         return () => {
