@@ -15,7 +15,7 @@ import excitedOwl from "../../assets/FruitFall/animals/Purple Owl/excited owl.gi
 import owl from "../../assets/FruitFall/animals/Purple Owl/sleeping owl.gif";
 import Congratulations from "../../assets/FruitFall/animals/Purple Owl/congratulations.gif";
 import owlBadge from "../../assets/FruitFall/animals/Purple Owl/owlBadge.png";
-import safari from "C:/Users/Kidsi/kia-gamification-2/frontend/src/assets/FruitFall/environment/background/safari-background.jpg";
+// import safari from "C:/Users/Kidsi/kia-gamification-2/frontend/src/assets/FruitFall/environment/background/safari-background.jpg";
 
 // Map fruit names to images
 const fruitImages = {
@@ -176,7 +176,7 @@ const FruitFall = () => {
         return (
         <div className="flex flex-col h-screen justify-center items-center w-screen scale-100 bg-cover bg-center bg-no-repeat"
             style={{
-                        backgroundImage: `url(${safari})` 
+                        // backgroundImage: `url(${safari})` 
                 
                       }}
             >
