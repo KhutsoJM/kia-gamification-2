@@ -5,7 +5,7 @@ export const levels = [
             { name: "A-pple", count: 1 },
         ],
         introText1: `Deep in the heart of a forest lives Ollie the Owl. Ollie is wise and kind, but he has a problem… he just loves to nap!`,
-        introText2: `The only way to wake Ollie is by feeding him his favourite fruits! Each fruit gives him a little more energy.`,
+        introText2: `The only way to wake Ollie is by feeding him his favourite fruits! Can you help? Drag 2 🍌 and 1 🍎 into the basket to get started!`,
     },
     {
         requiredFruits: [
