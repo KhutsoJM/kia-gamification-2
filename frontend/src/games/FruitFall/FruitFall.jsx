@@ -5,48 +5,24 @@ import { FaPlus, FaMinus, FaCheck } from "react-icons/fa";
 import { levels } from "./levels";
 import { playSound } from "../../utils/sounds";
 
+import { animals } from "../../assets/assets";
+import { fruits } from "../../assets/assets";
+import { props } from "../../assets/assets";
 
-// ASSETS
-// animals
-import giraffe from "../../assets/FruitFall/animals/Round/giraffe.png";
-import elephant from "../../assets/FruitFall/animals/Round/elephant.png";
-import hippo from "../../assets/FruitFall/animals/Round/hippo.png";
-import panda from "../../assets/FruitFall/animals/Round/panda.png";
-import owl from "../../assets/FruitFall/animals/Purple Owl/sleeping owl.gif";
-import penguin from "../../assets/FruitFall/animals/Round/penguin.png";
-import pig from "../../assets/FruitFall/animals/Round/pig.png";
-import rabbit from "../../assets/FruitFall/animals/Round/rabbit.png";
-import snake from "../../assets/FruitFall/animals/Round/snake.png";
-
-// fruits
-import apple from "../../assets/FruitFall/fruits/normal/apple.png";
-import banana from "../../assets/FruitFall/fruits/normal/banana.png";
-import blueberry from "../../assets/FruitFall/fruits/normal/blueberry.png";
-import cherry from "../../assets/FruitFall/fruits/normal/cherry.png";
-import orange from "../../assets/FruitFall/fruits/normal/orange.png";
-import raspberry from "../../assets/FruitFall/fruits/normal/raspberry.png";
-import watermelon from "../../assets/FruitFall/fruits/normal/watermelon.png";
-import grape from "../../assets/FruitFall/fruits/normal/grape.png";
 
 import basket from "../../assets/FruitFall/props/wooden-bucket.png";
 
 
-const fruits = [
-    { name: "apple", src: apple },
-    { name: "raspberry", src: raspberry },
-    { name: "banana", src: banana },
-    { name: "blueberry", src: blueberry },
-    { name: "orange", src: orange },
-    { name: "watermelon", src: watermelon },
-    { name: "grape", src: grape },
-    { name: "cherry", src: cherry },
+const fruitOptions = [
+    { name: "apple", src: fruits.apple },
+    { name: "raspberry", src: fruits.raspberry },
+    { name: "banana", src: fruits.banana },
+    { name: "blueberry", src: fruits.blueberry },
+    { name: "orange", src: fruits.orange },
+    { name: "watermelon", src: fruits.watermelon },
+    { name: "grape", src: fruits.grape },
+    { name: "cherry", src: fruits.cherry },
 ]
-
-// Requests: store as an object with an equation for dyscalculia support
-// const requests = {
-//     apple: { equation: '3 + 2', required: 5, fruit: "🍎" },
-//     banana: { equation: '6 - 4', required: 2, fruit: "🍌" },
-// };
 
 
 const introText1 = `Deep in the heart of a forest lives Ollie the Owl. 
@@ -106,9 +82,9 @@ const FruitFall = () => {
     }
 
     useEffect(() => {
-        
+
     }, []);
-    
+
     useEffect(() => {
         loadLevel(levelIndex);
     }, [levelIndex]);
@@ -168,7 +144,7 @@ const FruitFall = () => {
 
     // layout constants for the fruit box
     const ITEM_DISPLAY_WIDTH = 160; // px per fruit (includes gap)
-    const containerWidth = fruits.length * ITEM_DISPLAY_WIDTH + 64; // extra padding
+    const containerWidth = fruitOptions.length * ITEM_DISPLAY_WIDTH + 64; // extra padding
 
     // let requests = levels[levelIndex].requests;
 
@@ -254,7 +230,7 @@ const FruitFall = () => {
         <div ref={rootRef} className="flex flex-col h-screen justify-center items-center relative">
             {/* flying fruits rendered at root level so client coords match */}
             {flyingFruits.map((f, idx) => {
-                const src = fruits.find(x => x.name === f.name)?.src;
+                const src = fruitOptions.find(x => x.name === f.name)?.src;
                 const dx = (f.targetX || 0) - (f.startX || 0);
                 const dy = (f.targetY || 0) - (f.startY || 0);
                 return (
@@ -314,7 +290,7 @@ const FruitFall = () => {
                 className="flex flex-row items-end"
             >
                 <img
-                    src={owl} alt="animal"
+                    src={animals.owl} alt="animal"
                     className="w-64"
                 />
                 <div className="w-64 flex flex-col items-center justify-end relative">
@@ -402,7 +378,7 @@ const FruitFall = () => {
                     className="absolute left-1/2 transform -translate-x-1/2 bottom-8 z-20 flex flex-nowrap justify-center gap-6 px-6 py-4 items-center bg-teal-200 rounded-3xl shadow-lg border border-gray-200"
                     style={{ width: `${containerWidth}px` }}
                 >
-                    {fruits.map((fruit, index) => (
+                    {fruitOptions.map((fruit, index) => (
                         <div className="flex flex-row items-center gap-1 flex-none w-36 justify-center" key={index}>
                             <button onClick={() => handleFruitCountChange(fruit.name, -1)} className="p-2 bg-teal-300 rounded-full hover:bg-teal-400 cursor-pointer flex items-center justify-center">
                                 <FaMinus />
