@@ -5,7 +5,7 @@ export const levels = [
         animal: "owl",
         basket: "basket.png",
         requests: [
-            { id: 1, expression: "3 + 2", fruit: "apple", emoji: "🍎", required: 5 },
+            { id: 1, expression: "3 + 2", fruit: "apple", emoji: "🍏", required: 5 },
             { id: 2, expression: "6 - 4", fruit: "banana", emoji: "🍌", required: 2 },
         ],
     },
@@ -25,7 +25,7 @@ export const levels = [
         basket: "basket.png",
         requests: [
             { id: 1, expression: "10 - 3", fruit: "cherry", emoji: "🍒", required: 7 },
-            { id: 2, expression: "2 * 5", fruit: "apple", emoji: "🍎", required: 10 },
+            { id: 2, expression: "2 * 5", fruit: "apple", emoji: "🍏", required: 10 },
         ],
     },
 ];

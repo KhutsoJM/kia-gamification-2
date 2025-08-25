@@ -5,23 +5,18 @@ import { FaPlus, FaMinus, FaCheck } from "react-icons/fa";
 import { levels } from "./levels";
 import { playSound } from "../../utils/sounds";
 
-import { animals } from "../../assets/assets";
-import { fruits } from "../../assets/assets";
-import { props } from "../../assets/assets";
-
-
-import basket from "../../assets/FruitFall/props/wooden-bucket.png";
+import { animals, fruits, props } from "../../assets/assets";
 
 
 const fruitOptions = [
-    { name: "apple", src: fruits.apple },
-    { name: "raspberry", src: fruits.raspberry },
-    { name: "banana", src: fruits.banana },
-    { name: "blueberry", src: fruits.blueberry },
-    { name: "orange", src: fruits.orange },
-    { name: "watermelon", src: fruits.watermelon },
-    { name: "grape", src: fruits.grape },
-    { name: "cherry", src: fruits.cherry },
+    { name: "apple", src: fruits.apple, syllables: "ap-pple" },
+    { name: "raspberry", src: fruits.raspberry, syllables: "rasp-ber-ry" },
+    { name: "banana", src: fruits.banana, syllables: "ba-na-na" },
+    { name: "blueberry", src: fruits.blueberry, syllables: "blue-ber-ry" },
+    { name: "orange", src: fruits.orange, syllables: "or-ange" },
+    { name: "watermelon", src: fruits.watermelon, syllables: "wa-ter-mel-on" },
+    { name: "grape", src: fruits.grape, syllables: "grape" },
+    { name: "cherry", src: fruits.cherry, syllables: "cher-ry" },
 ]
 
 
@@ -33,6 +28,7 @@ and they really want him awake.`;
 const introText2 = `The only way to wake Ollie is by feeding him his favourite fruits! 
 Each fruit gives him a little more energy until he finally opens his eyes, 
 stretches his wings, and hoots happily.`;
+
 
 const FruitFall = () => {
     // states
@@ -296,7 +292,7 @@ const FruitFall = () => {
                 <div className="w-64 flex flex-col items-center justify-end relative">
                     <motion.img
                         ref={basketRef}
-                        src={basket}
+                        src={props.basket}
                         alt="basket"
                         className="w-36 z-20"
                         animate={lastDropFeedback === 'wrong' ? { x: [0, -10, 10, -6, 6, 0] } : lastDropFeedback === 'accepted' ? { scale: [1, 1.2, 1] } : {}}
@@ -383,31 +379,38 @@ const FruitFall = () => {
                             <button onClick={() => handleFruitCountChange(fruit.name, -1)} className="p-2 bg-teal-300 rounded-full hover:bg-teal-400 cursor-pointer flex items-center justify-center">
                                 <FaMinus />
                             </button>
-                            <div className="relative w-14 h-14">
+                            <div className="relative w-14">
                                 {/* Ghost image behind */}
                                 <img
                                     src={fruit.src}
                                     alt={`${fruit.name}-ghost`}
-                                    className="absolute inset-0 w-14 object-cover opacity-40 z-0"
+                                    className="absolute w-14 h-14 object-cover opacity-40 z-0"
                                 />
 
                                 {/* Draggable fruit on top */}
-                                <motion.img
-                                    drag
-                                    dragSnapToOrigin
-                                    src={fruit.src}
-                                    alt={fruit.name}
-                                    className="w-14 object-cover cursor-pointer relative z-10"
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    onDragEnd={(e, info) => handleDrop(info.point, fruit)}
-                                    onTapStart={() => {
-                                        playSound('bubbleClick2', 1, 0.75)
-                                    }}
-                                />
+                                <div className="flex flex-col items-bottom items-center">
+                                    <motion.img
+                                        drag
+                                        dragSnapToOrigin
+                                        src={fruit.src}
+                                        alt={fruit.name}
+                                        className="w-14 h-14 object-cover cursor-pointer relative z-10"
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                        onDragEnd={(e, info) => handleDrop(info.point, fruit)}
+                                        onTapStart={() => {
+                                            playSound('bubbleClick2', 1, 0.75)
+                                        }}
+                                    />
+
+                                    {/* syllables under fruit */}
+                                    <p className="mt-2 text-sm font-semibold text-gray-700 text-center whitespace-nowrap">
+                                        {fruit.syllables}
+                                    </p>
+                                </div>
 
                                 {/* Count badge */}
-                                <div className="absolute -bottom-2 -right-2 w-6 h-6 rounded-full bg-teal-500 text-white text-xs flex items-center justify-center font-bold shadow-md z-20">
+                                <div className="absolute top-1 -right-2 w-6 h-6 rounded-full bg-teal-500 text-white text-xs flex items-center justify-center font-bold shadow-md z-20">
                                     {fruitsCount[fruit.name]}
                                 </div>
                             </div>
