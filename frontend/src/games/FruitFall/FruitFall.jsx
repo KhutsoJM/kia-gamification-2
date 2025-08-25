@@ -168,7 +168,7 @@ const FruitFall = () => {
 
     // layout constants for the fruit box
     const ITEM_DISPLAY_WIDTH = 160; // px per fruit (includes gap)
-    const containerWidth = fruits.length * ITEM_DISPLAY_WIDTH + 32; // extra padding
+    const containerWidth = fruits.length * ITEM_DISPLAY_WIDTH + 64; // extra padding
 
     // let requests = levels[levelIndex].requests;
 
