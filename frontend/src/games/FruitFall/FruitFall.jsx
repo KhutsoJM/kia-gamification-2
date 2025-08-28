@@ -15,9 +15,6 @@ import excitedOwl from "../../assets/FruitFall/animals/Purple Owl/excited owl.gi
 import owl from "../../assets/FruitFall/animals/Purple Owl/sleeping owl.gif";
 import Congratulations from "../../assets/FruitFall/animals/Purple Owl/congratulations.gif";
 import owlBadge from "../../assets/FruitFall/animals/Purple Owl/owlBadge.png";
-<<<<<<< HEAD
-// import safari from "C:/Users/Kidsi/kia-gamification-2/frontend/src/assets/FruitFall/environment/background/safari-background.jpg";
-=======
 import safari from "C:/Users/Kidsi/kia-gamification-2/frontend/src/assets/FruitFall/environment/background/safari-background.jpg";
 import { Howl } from "howler";
 // Import the playSound function from utils
@@ -26,7 +23,6 @@ import forestVideo from "../../assets/FruitFall/environment/background/fruitfall
 import { AiOutlineClose } from "react-icons/ai"; // close (X) icon
 import coin from "../../assets/FruitFall/props/coin.PNG";
 
->>>>>>> 060474caee6088acf37a113ca478e614fff1d2f5
 
 // Map fruit names to images
 const fruitImages = {
