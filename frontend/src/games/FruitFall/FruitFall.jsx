@@ -200,9 +200,11 @@ const FruitFall = () => {
 
     // Move to next level or show congratulations
 
-    const goToNextLevel = () => {
+    const goToNextLevel = (setUnlockedLevel) => {
         if (currentLevel < levels.length - 1) {
             setCurrentLevel(currentLevel + 1);
+            setUnlockedLevel(prev => Math.max(prev, setCurrentLevel(currentLevel + 1))); // unlock next
+            localStorage.setItem("unlockedLevel", setCurrentLevel(currentLevel + 1));   // persist
             setCoinAnim(false);
         } else {
             setShowCongratulations(true);

@@ -9,12 +9,21 @@ const levels = [
 ];
 
 const LevelSelection = ({ onSelect }) => {
-   const [unlockedLevel] = useState(1);
+   const [unlockedLevel, setUnlockedLevel] = useState(1);
 
-  
+   // Load progress from localStorage
   useEffect(() => {
+    const savedProgress = localStorage.getItem("unlockedLevel");
+    if (savedProgress) {
+      setUnlockedLevel(parseInt(savedProgress, 10));
+    }
     playSound("natureAmbience", 0.5, 1);
   }, []);
+
+  // Update localStorage when unlockedLevel changes
+  useEffect(() => {
+    localStorage.setItem("unlockedLevel", unlockedLevel);
+  }, [unlockedLevel]);
 
   return (
     
