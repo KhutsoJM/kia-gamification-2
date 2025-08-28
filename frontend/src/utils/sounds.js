@@ -13,16 +13,11 @@ import click from "../assets/FruitFall/sounds/click-1.wav";
 import click2 from "../assets/FruitFall/sounds/click-2.mp3";
 import bubbleClick from "../assets/FruitFall/sounds/bubble-1.mp3";
 import bubbleClick2 from "../assets/FruitFall/sounds/bubble-2.mp3";
-<<<<<<< HEAD
-import bgMusic from "../assets/FruitFall/sounds/nature-ambience.mp3";
-
-=======
 import natureAmbience from "../assets/FruitFall/sounds/nature-ambience.mp3";
 import bucket from "../assets/FruitFall/sounds/bucket.mp3";
 import coinSound from "../assets/FruitFall/sounds/collect-points.mp3";
 import owlHoot from "../assets/FruitFall/sounds/owl_hooting.mp3"
 import failBuzzer from "../assets/FruitFall/sounds/fail_buzz.mp3";
->>>>>>> 060474caee6088acf37a113ca478e614fff1d2f5
 
 const sounds = {
     click: new Howl({ src: [click], volume: 1 }),
