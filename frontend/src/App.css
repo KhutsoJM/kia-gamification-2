@@ -17,4 +17,5 @@ html, body, #root {
   overflow: hidden; /* disables scrollbars */
   height: 100vh;    /* viewport height only */
   width: 100vw;     /* viewport width only */
+  background: transparent;
 }

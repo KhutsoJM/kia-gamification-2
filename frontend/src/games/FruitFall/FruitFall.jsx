@@ -15,7 +15,18 @@ import excitedOwl from "../../assets/FruitFall/animals/Purple Owl/excited owl.gi
 import owl from "../../assets/FruitFall/animals/Purple Owl/sleeping owl.gif";
 import Congratulations from "../../assets/FruitFall/animals/Purple Owl/congratulations.gif";
 import owlBadge from "../../assets/FruitFall/animals/Purple Owl/owlBadge.png";
+<<<<<<< HEAD
 // import safari from "C:/Users/Kidsi/kia-gamification-2/frontend/src/assets/FruitFall/environment/background/safari-background.jpg";
+=======
+import safari from "C:/Users/Kidsi/kia-gamification-2/frontend/src/assets/FruitFall/environment/background/safari-background.jpg";
+import { Howl } from "howler";
+// Import the playSound function from utils
+import { playSound } from "../../utils/sounds";
+import forestVideo from "../../assets/FruitFall/environment/background/fruitfall_game_vid.mp4";
+import { AiOutlineClose } from "react-icons/ai"; // close (X) icon
+import coin from "../../assets/FruitFall/props/coin.PNG";
+
+>>>>>>> 060474caee6088acf37a113ca478e614fff1d2f5
 
 // Map fruit names to images
 const fruitImages = {
@@ -47,6 +58,7 @@ const finalText =
     "Hoot hoot! You’ve helped Ollie wake up every time. Congratulations!";
 
 const FruitFall = () => {
+
     const [currentLevel, setCurrentLevel] = useState(0);
     const [showSecondParagraph, setShowSecondParagraph] = useState(false);
     const [showSpeechBubble, setShowSpeechBubble] = useState(false);
@@ -54,6 +66,9 @@ const FruitFall = () => {
     const [basketMessage, setBasketMessage] = useState("");
     const [isExcited, setIsExcited] = useState(false);
     const [showCongratulations, setShowCongratulations] = useState(false);
+    const [showExitModal, setShowExitModal] = useState(false);
+    const [score, setScore] = useState(0);
+    const [coinAnim, setCoinAnim] = useState(false);
 
     const levelData = levels[currentLevel];
     console.log(`Done: ${showCongratulations}`);
@@ -110,11 +125,18 @@ const FruitFall = () => {
         }
     }, [showSecondParagraph, introText2]);
 
+    useEffect(() => {
+        if (isExcited) {
+            playSound("owlHoot", 0.5, 1); // adjust volume and playback rate as needed
+        }
+    }, [isExcited]);
+
 
 
     // Drag and drop handlers
     const handleDragStart = (e, fruit) => {
         e.dataTransfer.setData("fruit", JSON.stringify(fruit));
+        playSound("click"); 
     };
 
     const handleDrop = (e) => {
@@ -137,23 +159,41 @@ const FruitFall = () => {
             (req) => fruitCounts[req.name] === req.count
         );
         setIsExcited(matches);
+        playSound("bucket");
     }, [basketFruits, requiredFruits]);
 
     const handleDropFruit = (e) => {
     e.preventDefault();
     const fruit = JSON.parse(e.dataTransfer.getData("fruit"));
+    playSound("coinSound", 0.5, 1);
 
     // Check if the fruit is required for this level
     const isRequired = requiredFruits.some(req => req.name === fruit.name);
 
     if (isRequired) {
         setBasketFruits((prev) => [...prev, fruit]);
+        setScore(prev => prev + 10);
+        setCoinAnim(true);
         setBasketMessage(""); // clear message if correct
     } else {
+        setScore(prev => {
+            const newScore = Math.max(prev - 5, 0);
+
+            // If score hits 0, send player back to level 1
+            if (newScore === 0) {
+                // Example: reset level and basket
+                setCurrentLevel(0);
+                setBasketFruits([]);
+            }
+
+            return newScore;
+        });
+        playSound("failBuzzer", 0.5, 1);
         setBasketMessage(`You’re learning! That’s not the one, try again.`); // show message if wrong fruit
 
         // Remove message after 2 seconds
         setTimeout(() => setBasketMessage(""), 2000);
+
     }
 
 };
@@ -163,13 +203,28 @@ const FruitFall = () => {
     const goToNextLevel = () => {
         if (currentLevel < levels.length - 1) {
             setCurrentLevel(currentLevel + 1);
+            setCoinAnim(false);
         } else {
             setShowCongratulations(true);
         }
     };
     
   
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+
+    
+
+    if (showExitModal)
+        return (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <div className="bg-white p-6 rounded-lg text-center">
+            <p className="mb-4">Are you sure you want to exit this level?</p>
+            <button className="px-4 py-2 bg-green-500 text-white mr-2 rounded" onClick={() => navigate("/category")}>Yes</button>
+            <button className="px-4 py-2 bg-gray-300 rounded" onClick={() => setShowExitModal(false)}>Cancel</button>
+            </div>
+        </div>
+        );
+
 
     if (showCongratulations) 
         
@@ -207,158 +262,186 @@ const FruitFall = () => {
     
 
     return (
-        <div className="flex flex-col h-screen justify-center items-center relative">
-            <div className="absolute top-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center bg-white bg-opacity-90 border-2 border-gray-300 rounded-lg shadow-lg px-8 py-6 w-[500px] text-xl text-center">
-                <AnimatePresence>
-                    {!showSecondParagraph && (
-                    <motion.p
-                        key="intro1"
-                        initial={{ opacity: 1 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.7 }}
-                        className="font-normal text-lg"
-                    >
-                        {introText1} 
-                    </motion.p>
-                    )}
-                    {showSecondParagraph && (
-                    <motion.p
-                        key="intro2"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.7 }}
-                        className="flex flex-row justify-center items-center space-x-4"
-                    >
-                        
-                        {requiredFruits.map(fruit => (
-                        <span key={fruit.name} className="flex flex-col items-center">
-                            <img
-                                src={fruitImages[fruit.name]} // get image from mapping
-                                alt={fruit.name}
-                                className="w-10 h-10"          // adjust size as needed
-                            /> 
-                        
-                            <span className="flex font-bold">{fruit.count}</span>
-                        </span>
-                        ))}
-                    </motion.p>
-                    )}
-                </AnimatePresence>
-
-                {isExcited && (
-                    <button
-                    className="mt-4 px-6 py-3 bg-green-600 text-white rounded-lg shadow font-bold text-lg hover:bg-green-700 transition"
-                    onClick={goToNextLevel}
-                    >
-                    {currentLevel < levels.length - 1 ? `Level ${currentLevel + 2}` : "Finish"}
-                    </button>
-                )}
-            </div>
         
-            {/* Floating fruits on the screen */}
-            <div className="overflow-hidden">
-                <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-10">
-                    {[...Array(3)].map((_, repeatIndex) => (   //  repeat 3 times
-                        fruitList.map((fruit, idx) => {
-                        const fruitSize = 80; // px
-                        const maxX = window.innerWidth - fruitSize;;
-                        const minY = window.innerHeight / 2 + 100; // start just below the owl
-                        const maxY = window.innerHeight - fruitSize - 20; // stay above the bottom edge
-
-
-                        return (
-                            <motion.img
-                            key={`${fruit.name}-${repeatIndex}-${idx}`}
-                            src={fruit.img}
-                            alt={fruit.name}
-                            className="w-20 absolute cursor-grab pointer-events-auto"
-                            draggable
-                            onDragStart={(e) => handleDragStart(e, fruit)}
-                            initial={{
-                                x: Math.random() * maxX,
-                                y: minY + Math.random() * (maxY - minY),
-                            }}
-                            animate={{
-                                y: [
-                                minY + Math.random() * (maxY - minY),
-                                minY + Math.random() * (maxY - minY),
-                                minY + Math.random() * (maxY - minY),
-                            ],
-                                x: [
-                                Math.random() * maxX,  // random horizontal position 1
-                                Math.random() * maxX,  // random horizontal position 2
-                                Math.random() * maxX,  // random horizontal position 3
-                            ],
-                            }}
-                            transition={{
-                                duration: 6 + Math.random() * 3,
-                                repeat: Infinity,
-                                repeatType: "mirror",
-                                ease: "easeInOut",
-                            }}
-                            />
-                        );
-                        })
-                    ))}
-                </div>
+        <div className="relative w-full h-screen overflow-hidden">
+            <video autoPlay muted playsInline pointer-events-none className="absolute top-0 left-0 w-full h-full object-cover z-0">
+                <source src={forestVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+    
+            <div className="absolute top-10 left-20 flex items-center space-x-2 z-50">
+                <motion.img
+                    src={coin}
+                    alt="coin"
+                    className="w-20 h-20"
+                    animate={coinAnim ? { scale: [1, 1.5, 1], rotate: [0, 50, -50, 0] } : { scale: 1, rotate: 0 }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                />
+                <span className="text-white font-bold text-xl">{score}</span>
             </div>
-                
-            <div className="flex flex-row items-end justify-between w-full px-4">
-                {/* Owl */}
-                <div className="relative flex flex-col items-center">
-                    
-                    <motion.img
-                        initial={{ x: -1000 }}
-                        animate={{ x: 0 }}
-                        transition={{
-                            delay: 1,
-                            duration: 0.75,
-                        }}
-                        src={isExcited ? excitedOwl : owl}
-                        alt="animal"
-                        className="w-80 mt=40"
-                    />
+
+            <div className="absolute top-10 right-20 z-50 cursor-pointer">
+                <AiOutlineClose 
+                    size={50} 
+                    color="white"
+                    className="hover:scale-110 transition-transform duration-200"
+                    onClick={() => setShowExitModal(true)}
+                />
+            </div>
+
+            <div className="z-10 flex flex-col h-screen justify-center items-center relative">
+         
+                <div className="absolute top-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center bg-white bg-opacity-90 border-2 border-gray-300 rounded-lg shadow-lg px-8 py-6 w-[500px] text-xl text-center">
+                    <AnimatePresence>
+                        {!showSecondParagraph && (
+                        <motion.p
+                            key="intro1"
+                            initial={{ opacity: 1 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.7 }}
+                            className="font-normal text-lg"
+                        >
+                            {introText1} 
+                        </motion.p>
+                        )}
+                        {showSecondParagraph && (
+                        <motion.p
+                            key="intro2"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.7 }}
+                            className="flex flex-row justify-center items-center space-x-4"
+                        >
+                            
+                            {requiredFruits.map(fruit => (
+                            <span key={fruit.name} className="flex flex-col items-center">
+                                <img
+                                    src={fruitImages[fruit.name]} // get image from mapping
+                                    alt={fruit.name}
+                                    className="w-10 h-10"          // adjust size as needed
+                                /> 
+                            
+                                <span className="flex font-bold">{fruit.count}</span>
+                            </span>
+                            ))}
+                        </motion.p>
+                        )}
+                    </AnimatePresence>
+
+                    {isExcited && (
+                        <button
+                        className="mt-4 px-6 py-3 bg-green-600 text-white rounded-lg shadow font-bold text-lg hover:bg-green-700 transition"
+                        onClick={goToNextLevel}
+                        >
+                        {currentLevel < levels.length - 1 ? `Level ${currentLevel + 2}` : "Finish"}
+                        </button>
+                    )}
                 </div>
-                {/* Basket with drop area */}
-                <div className="relative flex flex-col items-center mb-10">
-                    <motion.img
-                        initial={{ x: 1000 }}
-                        animate={{ x: 0 }}
-                        transition={{
-                            delay: 1.2,
-                            duration: 0.75,
-                        }}
-                        src={basket}
-                        alt="basket"
-                        className="w-50"
-                        onDrop={handleDropFruit}
-                        onDragOver={handleDragOver}
-                        style={{ cursor: "pointer" }}
-                    />
-                    {/* Show dropped fruits in basket */}
-                    <div className="flex flex-row flex-wrap justify-center mt-2">
-                        {basketFruits.map((fruit, idx) => (
-                            <img
-                                key={idx}
+            
+                {/* Floating fruits on the screen */}
+                <div className="overflow-hidden">
+                    <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-10">
+                        {[...Array(3)].map((_, repeatIndex) => (   //  repeat 3 times
+                            fruitList.map((fruit, idx) => {
+                            const fruitSize = 80; // px
+                            const maxX = window.innerWidth - fruitSize;;
+                            const minY = window.innerHeight / 2 + 100; // start just below the owl
+                            const maxY = window.innerHeight - fruitSize - 20; // stay above the bottom edge
+
+
+                            return (
+                                <motion.img
+                                key={`${fruit.name}-${repeatIndex}-${idx}`}
                                 src={fruit.img}
                                 alt={fruit.name}
-                                className="w-8 mx-1"
-                            />
+                                className="w-20 absolute cursor-grab pointer-events-auto"
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, fruit)}
+                                initial={{
+                                    x: Math.random() * maxX,
+                                    y: minY + Math.random() * (maxY - minY),
+                                }}
+                                animate={{
+                                    y: [
+                                    minY + Math.random() * (maxY - minY),
+                                    minY + Math.random() * (maxY - minY),
+                                    minY + Math.random() * (maxY - minY),
+                                ],
+                                    x: [
+                                    Math.random() * maxX,  // random horizontal position 1
+                                    Math.random() * maxX,  // random horizontal position 2
+                                    Math.random() * maxX,  // random horizontal position 3
+                                ],
+                                }}
+                                transition={{
+                                    duration: 6 + Math.random() * 3,
+                                    repeat: Infinity,
+                                    repeatType: "mirror",
+                                    ease: "easeInOut",
+                                }}
+                                />
+                                                        );
+                            })
                         ))}
                     </div>
-                    {/* Show message if wrong fruit */}
-                        {basketMessage && (
-                            <div className="text-orange-400 font-bold mb-1 text-sm">
-                                {basketMessage}
-                            </div>
-                        )}
                 </div>
-                
+                    
+                <div className="flex flex-row items-end justify-between w-full px-4">
+                    {/* Owl */}
+                    <div className="relative left-120 flex flex-col items-center">
+                        
+                        <motion.img
+                            initial={{ x: -1000 }}
+                            animate={{ x: 0 }}
+                            transition={{
+                                delay: 1,
+                                duration: 0.75,
+                            }}
+                            src={isExcited ? excitedOwl : owl}
+                            alt="animal"
+                            className="w-80 mt=40"
+                        />
+                    </div>
+                    {/* Basket with drop area */}
+                    <div className="relative right-120 flex flex-col items-center mb-10">
+                        
+                        <motion.img
+                            initial={{ x: 1000 }}
+                            animate={{ x: 0 }}
+                            transition={{
+                                delay: 1.2,
+                                duration: 0.75,
+                            }}
+                            src={basket}
+                            alt="basket"
+                            className="w-50"
+                            onDrop={handleDropFruit}
+                            onDragOver={handleDragOver}
+                            style={{ cursor: "pointer" }}
+                        />
+                        {/* Show dropped fruits in basket */}
+                        <div className="flex flex-row flex-wrap justify-center mt-2">
+                            {basketFruits.map((fruit, idx) => (
+                                <img
+                                    key={idx}
+                                    src={fruit.img}
+                                    alt={fruit.name}
+                                    className="w-8 mx-1"
+                                />
+                            ))}
+                        </div>
+                        {/* Show message if wrong fruit */}
+                            {basketMessage && (
+                                <div className="text-orange-400 font-bold mb-1 text-sm">
+                                    {basketMessage}
+                                </div>
+                            )}
+                    </div>
+                </div>
             </div>
         </div>
     );
 };
-
 
 export default FruitFall;
