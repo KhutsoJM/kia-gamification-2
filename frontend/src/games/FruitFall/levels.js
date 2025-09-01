@@ -1,16 +1,17 @@
 // levels.js
 export const levels = [
     {
-        id: 1,
+        id: 0,
         animal: "owl",
         basket: "basket.png",
+        tutorial: true,
         requests: [
             { id: 1, expression: "3 + 2", fruit: "apple", emoji: "🍏", required: 5 },
             { id: 2, expression: "6 - 4", fruit: "banana", emoji: "🍌", required: 2 },
         ],
     },
     {
-        id: 2,
+        id: 1,
         animal: "elephant",
         basket: "basket.png",
         requests: [
@@ -20,7 +21,7 @@ export const levels = [
 
     },
     {
-        id: 3,
+        id: 2,
         animal: "lion",
         basket: "basket.png",
         requests: [

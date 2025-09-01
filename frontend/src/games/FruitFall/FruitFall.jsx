@@ -45,7 +45,15 @@ const FruitFall = () => {
     const [lastAcceptedFruit, setLastAcceptedFruit] = useState(null);
     const [basketCounts, setBasketCounts] = useState({});
     const [flyingFruits, setFlyingFruits] = useState([]); // { id, name, offset }
-    const [levelIndex, setLevelIndex] = useState(0);
+    const [levelIndex, setLevelIndex] = useState(() => {
+        const saved = localStorage.getItem("currentLevel");
+        return saved ? Number(saved) : 0;
+    });
+    const [showLevelText, setShowLevelText] = useState(false);
+
+    useEffect(() => {
+        localStorage.setItem("currentLevel", levelIndex);
+    }, [levelIndex]);
 
     // State to track the count of each fruit
     const [fruitsCount, setFruitsCount] = useState({
@@ -63,6 +71,11 @@ const FruitFall = () => {
 
     function goToNextLevel() {
         if (levelIndex < levels.length - 1) {
+            setShowLevelText(true);
+            setTimeout(() => {
+                setShowLevelText(false);
+
+            }, 2000);
             setLevelIndex(levelIndex + 1);
             // Reset basket counts etc
             setBasketCounts({});
@@ -74,22 +87,39 @@ const FruitFall = () => {
         } else {
             // Last level finished
             setIsGameFinished(true);
+            localStorage.setItem("currentLevel", 0)
         }
     }
 
-    useEffect(() => {
-
-    }, []);
 
     useEffect(() => {
+        setShowLevelText(true);
+        setTimeout(() => {
+            setShowLevelText(false);
+        }, true)
         loadLevel(levelIndex);
     }, [levelIndex]);
 
     // Speak the first paragraph on mount
     useEffect(() => {
-        const utter = new window.SpeechSynthesisUtterance(introText1);
-        window.speechSynthesis.speak(utter);
+        if (levelIndex === 0) {
+            console.log("speaking intro")
+            const utter = new window.SpeechSynthesisUtterance(introText1);
+            window.speechSynthesis.speak(utter);
+            const timer = start(2000, 3000, 13500, true)
+            setTimeout(() => { }, 5000);
+            console.log("started timer", timer);
 
+            return () => {
+                clearTimeout(timer);
+                window.speechSynthesis.cancel();
+            };
+        } else {
+            start(1000, 1000, 2000, false)
+        }
+    }, []);
+
+    const start = (pause1, pause2, pause3, pause4 = 0, isTimer = false) => {
         const timer = setTimeout(() => {
             setShowSecondParagraph(true);
             setTimeout(() => {
@@ -99,16 +129,13 @@ const FruitFall = () => {
                     setIsFruitsVisible(true);
                     setTimeout(() => {
                         setShowRequests(true);
-                    }, 2000);
-                }, 3000);
-            }, 13500);
-        }, 5000);
+                    }, pause1);
+                }, pause2);
+            }, pause3);
+        }, pause4);
 
-        return () => {
-            clearTimeout(timer);
-            window.speechSynthesis.cancel();
-        };
-    }, []);
+        if (isTimer) return timer;
+    }
 
     // Speak the second paragraph when it appears
     useEffect(() => {
@@ -243,7 +270,7 @@ const FruitFall = () => {
                 )
             })}
             <AnimatePresence mode="wait">
-                {!startGame &&
+                {(!startGame && levelIndex === 0) ?
                     <motion.div
                         initial={{ opacity: 0, y: -50 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -263,7 +290,7 @@ const FruitFall = () => {
                                 {introText1}
                             </motion.p>
                         )}
-                        {showSecondParagraph && (
+                        {(showSecondParagraph && showLevelText) && (
                             <motion.p
                                 key="intro2"
                                 initial={{ opacity: 0 }}
@@ -274,7 +301,16 @@ const FruitFall = () => {
                                 {introText2}
                             </motion.p>
                         )}
-                    </motion.div>}
+                    </motion.div> :
+                    <motion.p
+                        initial={{ opacity: 0, y: -50, scale: 0.8 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -20, scale: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="absolute top-24 left-1/2 transform -translate-x-1/2 text-4xl font-bold text-center"
+                    >
+                        Level {levelIndex + 1}
+                    </motion.p>}
             </AnimatePresence>
             <motion.div
                 initial={{ x: -1000, y: 50 }}
