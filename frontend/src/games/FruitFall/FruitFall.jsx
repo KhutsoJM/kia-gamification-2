@@ -69,6 +69,8 @@ const FruitFall = () => {
 
     const level = levels[levelIndex];
 
+
+
     function goToNextLevel() {
         if (levelIndex < levels.length - 1) {
             setShowLevelText(true);
@@ -91,7 +93,6 @@ const FruitFall = () => {
         }
     }
 
-
     useEffect(() => {
         setShowLevelText(true);
         setTimeout(() => {
@@ -99,6 +100,35 @@ const FruitFall = () => {
         }, true)
         loadLevel(levelIndex);
     }, [levelIndex]);
+
+
+    // COMPARE AND DELETE LATER
+    useEffect(() => {
+        const utter = new window.SpeechSynthesisUtterance(introText1);
+        window.speechSynthesis.speak(utter);
+
+        const timer = setTimeout(() => {
+            setShowSecondParagraph(true);
+            setTimeout(() => {
+                console.log("done speaking")
+                setStartGame(true);
+                setTimeout(() => {
+                    setIsFruitsVisible(true);
+                    setTimeout(() => {
+                        setShowRequests(true);
+                    }, 2000);
+                }, 3000);
+            }, 13500);
+        }, 15000);
+
+        return () => {
+            clearTimeout(timer);
+            window.speechSynthesis.cancel();
+        };
+    }, []);
+
+
+
 
     // Speak the first paragraph on mount
     useEffect(() => {
@@ -118,6 +148,8 @@ const FruitFall = () => {
             start(1000, 1000, 2000, false)
         }
     }, []);
+
+
 
     const start = (pause1, pause2, pause3, pause4 = 0, isTimer = false) => {
         const timer = setTimeout(() => {
