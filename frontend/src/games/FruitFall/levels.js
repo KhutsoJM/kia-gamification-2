@@ -6,8 +6,8 @@ export const levels = [
         basket: "basket.png",
         tutorial: true,
         requests: [
-            { id: 1, expression: "3 + 2", fruit: "apple", emoji: "🍏", required: 5 },
-            { id: 2, expression: "6 - 4", fruit: "banana", emoji: "🍌", required: 2 },
+            { id: 1, expression: "3 ➕ 2", fruit: "apple", emoji: "🍏", required: 5 },
+            { id: 2, expression: "6 ➖ 4", fruit: "banana", emoji: "🍌", required: 2 },
         ],
     },
     {
@@ -15,8 +15,8 @@ export const levels = [
         animal: "elephant",
         basket: "basket.png",
         requests: [
-            { id: 1, expression: "4 + 4", fruit: "grape", emoji: "🍇", required: 8 },
-            { id: 2, expression: "3 x 2", fruit: "orange", emoji: "🍊", required: 6 },
+            { id: 1, expression: "4 ➕ 4", fruit: "grape", emoji: "🍇", required: 8 },
+            { id: 2, expression: "3 ✖️ 2", fruit: "orange", emoji: "🍊", required: 6 },
         ],
 
     },
@@ -25,8 +25,26 @@ export const levels = [
         animal: "lion",
         basket: "basket.png",
         requests: [
-            { id: 1, expression: "10 - 3", fruit: "cherry", emoji: "🍒", required: 7 },
-            { id: 2, expression: "2 * 5", fruit: "apple", emoji: "🍏", required: 10 },
+            { id: 1, expression: "10 ➖ 3", fruit: "cherry", emoji: "🍒", required: 7 },
+            { id: 2, expression: "2 ✖️ 5", fruit: "apple", emoji: "🍏", required: 10 },
+        ],
+    },
+    {
+        id: 3,
+        animal: "lion",
+        basket: "basket.png",
+        requests: [
+            { id: 1, expression: "(4 ✖️ 3) ➖ 11", fruit: "watermelon", emoji: "🍉", required: 1 },
+            { id: 2, expression: "2 ✖️ 4", fruit: "blueberry", emoji: "🫐", required: 8 },
+        ],
+    },
+    {
+        id: 4,
+        animal: "lion",
+        basket: "basket.png",
+        requests: [
+            { id: 1, expression: "10 ➕ 14", fruit: "grape", emoji: "🍇", required: 24 },
+            { id: 2, expression: "2 ✖️ 2 ➗ 1", fruit: "orange", emoji: "🍊", required: 4 },
         ],
     },
 ];

@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaPlus, FaMinus, FaCheck } from "react-icons/fa";
+import { FaPlus, FaMinus, FaCheck, FaSoundcloud } from "react-icons/fa";
 
 import { levels } from "./levels";
 import { playSound } from "../../utils/sounds";
 
 import { animals, fruits, props } from "../../assets/assets";
+import background from "../../assets/FruitFall/environment/background/forest-bg-2.jpg";
 
 
 const fruitOptions = [
@@ -69,7 +70,7 @@ const FruitFall = () => {
 
     const level = levels[levelIndex];
 
-
+    playSound("bgMusic", 0.05);
 
     function goToNextLevel() {
         if (levelIndex < levels.length - 1) {
@@ -152,7 +153,6 @@ const FruitFall = () => {
     }, [showSecondParagraph]);
 
 
-
     const handleFruitCountChange = (fruitName, amount) => {
         if (fruitsCount[fruitName] > 0 || amount > 0) {
             playSound('click', 0.5);
@@ -214,6 +214,7 @@ const FruitFall = () => {
                 setTimeout(() => setLastDropFeedback(null), 700);
                 return false;
             }
+
             const have = fruitsCount[fruit.name] || 0;
             // debug info to help diagnose drop issues
             console.debug('[FruitFall] drop', { fruit: fruit.name, point, have, required: req.required, basketRect: rect, rootRect });
@@ -268,7 +269,13 @@ const FruitFall = () => {
     };
 
     return (
-        <div ref={rootRef} className="flex flex-col h-screen justify-center items-center relative">
+        <div
+            ref={rootRef}
+            className="flex flex-col h-screen w-screen justify-center items-center relative bg-no-repeat bg-cover"
+            style={{
+                backgroundImage: `url(${background})`,
+            }}
+        >
             {/* flying fruits rendered at root level so client coords match */}
             {flyingFruits.map((f, idx) => {
                 const src = fruitOptions.find(x => x.name === f.name)?.src;
@@ -287,6 +294,14 @@ const FruitFall = () => {
                     />
                 )
             })}
+
+            <div
+                id="coin-target"
+                className="absolute top-8 right-8 w-16"
+            >
+                <img src={props.coin} alt="Coin" />
+            </div>
+
             <AnimatePresence mode="wait">
                 {(!startGame && levelIndex === 0) ?
                     <motion.div
@@ -296,6 +311,7 @@ const FruitFall = () => {
                         transition={{ duration: 0.5 }}
                         // onClick={() => setStartGame(true)}
                         className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-90 border-2 border-gray-300 rounded-lg shadow-lg px-8 py-6 w-[500px] text-xl text-center">
+
                         {!showSecondParagraph && (
                             <motion.p
                                 key="intro1"
@@ -308,6 +324,7 @@ const FruitFall = () => {
                                 {introText1}
                             </motion.p>
                         )}
+
                         {showSecondParagraph && (
                             <motion.p
                                 key="intro2"
@@ -319,17 +336,19 @@ const FruitFall = () => {
                                 {introText2}
                             </motion.p>
                         )}
+
                     </motion.div> :
                     showLevelText && <motion.p
                         initial={{ opacity: 0, y: -50, scale: 0.8 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -20, scale: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="absolute top-24 left-1/2 transform -translate-x-1/2 text-4xl font-bold text-center"
+                        className="absolute top-24 left-1/2 transform -translate-x-1/2 text-4xl font-bold text-center libertinus"
                     >
                         Level {levelIndex + 1}
                     </motion.p>}
             </AnimatePresence>
+
             <motion.div
                 initial={{ x: -1000, y: 50 }}
                 animate={{ x: 0, y: startGame ? -50 : 50 }}
@@ -340,9 +359,11 @@ const FruitFall = () => {
                 className="flex flex-row items-end"
             >
                 <img
-                    src={animals.owl} alt="animal"
+                    src={animals.owl}
+                    alt="animal"
                     className="w-64"
                 />
+
                 <div className="w-64 flex flex-col items-center justify-end relative">
                     <motion.img
                         ref={basketRef}
@@ -351,14 +372,14 @@ const FruitFall = () => {
                         className="w-36 z-20"
                         animate={lastDropFeedback === 'wrong' ? { x: [0, -10, 10, -6, 6, 0] } : lastDropFeedback === 'accepted' ? { scale: [1, 1.2, 1] } : {}}
                         transition={lastDropFeedback === 'wrong' ? { duration: 0.6 } : { duration: 0.3 }}
-                    // style={lastDropFeedback === 'accepted' ? { boxShadow: '0 8px 20px rgba(34,197,94,0.25)' } : {}}
                     />
                 </div>
+
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: showRequests ? 1 : 0, scale: showRequests ? 1 : 0.8 }}
                     transition={{ duration: 0.5 }}
-                    className="w-64 mx-6 px-4 py-4 bg-white border border-gray-300 rounded-lg shadow-lg self-start">
+                    className="w-72 mx-6 px-4 py-4 bg-white border border-gray-300 rounded-lg shadow-lg self-start">
                     {Object.entries(requests).map(([name, r]) => {
                         const have = basketCounts[name] || 0;
                         const satisfied = have >= r.required;
@@ -384,20 +405,22 @@ const FruitFall = () => {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="absolute h-screen  w-screen flex flex-col items-center justify-center bg-teal-300 bg-opacity-80 z-50"
+                    className="absolute h-screen  w-screen flex flex-col items-center justify-center bg-teal-300/50 bg-opacity-80 z-50"
                 >
-                    <h2 className="text-4xl font-bold mb-4">You did it! 🎉</h2>
-                    <button
-                        onClick={() => {
-                            setFruitsCount({ apple: 0, raspberry: 0, banana: 0, blueberry: 0, orange: 0, watermelon: 0, grape: 0, cherry: 0 });
-                            setBasketCounts({});
-                            setFlyingFruits([]);
-                            goToNextLevel();
-                        }}
-                        className="px-6 py-3 bg-teal-500 text-white rounded-lg shadow-lg hover:bg-teal-600"
-                    >
-                        Next Level →
-                    </button>
+                    <div className="bg-teal-400/80 p-20 flex items-center justify-center flex-col rounded-2xl">
+                        <h2 className="text-4xl font-bold mb-4">You did it! 🎉</h2>
+                        <button
+                            onClick={() => {
+                                setFruitsCount({ apple: 0, raspberry: 0, banana: 0, blueberry: 0, orange: 0, watermelon: 0, grape: 0, cherry: 0 });
+                                setBasketCounts({});
+                                setFlyingFruits([]);
+                                goToNextLevel();
+                            }}
+                            className="px-6 py-3 bg-teal-500 text-white rounded-lg shadow-lg hover:bg-teal-600 cursor-pointer"
+                        >
+                            Next Level →
+                        </button>
+                    </div>
                 </motion.div>
             )}
 
@@ -411,7 +434,7 @@ const FruitFall = () => {
                     <p className="text-xl mb-6">You completed all levels!</p>
                     <button
                         onClick={() => window.location.reload()} // or navigate to main menu
-                        className="px-8 py-4 bg-yellow-500 text-white rounded-full shadow-lg hover:bg-yellow-600 text-xl"
+                        className="px-8 py-4 bg-yellow-500 text-white rounded-full shadow-lg hover:bg-yellow-600 text-xl cursor-pointer"
                     >
                         Play Again
                     </button>
@@ -424,12 +447,12 @@ const FruitFall = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                     // absolutely position the fruit box so it doesn't change layout
-                    className="absolute left-1/2 transform -translate-x-1/2 bottom-8 z-20 flex flex-nowrap justify-center gap-6 px-6 py-4 items-center bg-teal-200 rounded-3xl shadow-lg border border-gray-200"
+                    className="absolute left-1/2 transform -translate-x-1/2 bottom-8 z-20 flex flex-nowrap justify-center gap-6 px-6 py-4 items-center bg-amber-800/60 rounded-3xl shadow-lg border border-amber-700"
                     style={{ width: `${containerWidth}px` }}
                 >
                     {fruitOptions.map((fruit, index) => (
                         <div className="flex flex-row items-center gap-1 flex-none w-36 justify-center" key={index}>
-                            <button onClick={() => handleFruitCountChange(fruit.name, -1)} className="p-2 bg-teal-300 rounded-full hover:bg-teal-400 cursor-pointer flex items-center justify-center">
+                            <button onClick={() => handleFruitCountChange(fruit.name, -1)} className="p-2 bg-amber-300 rounded-full hover:bg-amber-400 cursor-pointer flex items-center justify-center">
                                 <FaMinus />
                             </button>
                             <div className="relative w-14">
@@ -457,18 +480,18 @@ const FruitFall = () => {
                                     />
 
                                     {/* syllables under fruit */}
-                                    <p className="mt-2 text-sm font-semibold text-gray-700 text-center whitespace-nowrap">
+                                    <p className="mt-2 text-sm font-semibold text-white text-center whitespace-nowrap">
                                         {fruit.syllables}
                                     </p>
                                 </div>
 
                                 {/* Count badge */}
-                                <div className="absolute top-1 -right-2 w-6 h-6 rounded-full bg-teal-500 text-white text-xs flex items-center justify-center font-bold shadow-md z-20">
+                                <div className="absolute top-1 -right-2 w-6 h-6 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center font-bold shadow-md z-20">
                                     {fruitsCount[fruit.name]}
                                 </div>
                             </div>
 
-                            <button onClick={() => handleFruitCountChange(fruit.name, 1)} className="p-2 bg-teal-300 rounded-full hover:bg-teal-400 cursor-pointer flex items-center justify-center">
+                            <button onClick={() => handleFruitCountChange(fruit.name, 1)} className="p-2 bg-amber-300 rounded-full hover:bg-amber-400 cursor-pointer flex items-center justify-center">
                                 <FaPlus />
                             </button>
                         </div>

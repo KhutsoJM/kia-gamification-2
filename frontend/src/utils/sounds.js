@@ -13,6 +13,9 @@ import click from "../assets/FruitFall/sounds/click-1.wav";
 import click2 from "../assets/FruitFall/sounds/click-2.mp3";
 import bubbleClick from "../assets/FruitFall/sounds/bubble-1.mp3";
 import bubbleClick2 from "../assets/FruitFall/sounds/bubble-2.mp3";
+import pop from "../assets/FruitFall/sounds/pop-1.mp3";
+import pop2 from "../assets/FruitFall/sounds/pop-2.mp3";
+import bgMusic from "../assets/FruitFall/sounds/nature-ambience.mp3";
 
 
 const sounds = {
@@ -20,6 +23,9 @@ const sounds = {
     click2: new Howl({ src: [click2], volume: 1 }),
     bubbleClick: new Howl({ src: [bubbleClick], volume: 1 }),
     bubbleClick2: new Howl({ src: [bubbleClick2], volume: 1.75 }),
+    pop: new Howl({ src: [pop], volume: 1 }),
+    pop2: new Howl({ src: [pop2], volume: 1 }),
+    bgMusic: new Howl({ src: [bgMusic], volume: 0.5 }),
 };
 
 export const playSound = (name, volume = 1, rate = 1) => {
@@ -28,6 +34,14 @@ export const playSound = (name, volume = 1, rate = 1) => {
     if (!sound) {
         console.warn(`Sound "${name}" not found`);
         return;
+    }
+
+    if (name === "bgMusic") {
+        sound.loop(true);
+        if (sound.playing()) {
+            console.log("arleady playing bg music");
+            return;
+        }
     }
 
     sound.volume(volume);

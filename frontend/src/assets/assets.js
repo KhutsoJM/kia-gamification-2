@@ -21,7 +21,7 @@ import grape from "./FruitFall/fruits/normal/grape.png";
 
 // PROPS
 import basket from "./FruitFall/props/wooden-bucket.png";
-
+import coin from "./FruitFall/props/coin.PNG";
 
 export const animals = {
     giraffe,
@@ -48,4 +48,5 @@ export const fruits = {
 
 export const props = {
     basket,
+    coin,
 }
