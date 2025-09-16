@@ -101,39 +101,14 @@ const FruitFall = () => {
     }, [levelIndex]);
 
 
-    // COMPARE AND DELETE LATER
-    useEffect(() => {
-        const utter = new window.SpeechSynthesisUtterance(introText1);
-        window.speechSynthesis.speak(utter);
-
-        const timer = setTimeout(() => {
-            setShowSecondParagraph(true);
-            setTimeout(() => {
-                setStartGame(true);
-                setTimeout(() => {
-                    setIsFruitsVisible(true);
-                    setTimeout(() => {
-                        setShowRequests(true);
-                    }, 2000);
-                }, 3000);
-            }, 13500);
-        }, 5000);
-
-        return () => {
-            clearTimeout(timer);
-            window.speechSynthesis.cancel();
-        };
-    }, []);
-
-
-
-
     // Speak the first paragraph on mount
     useEffect(() => {
+        console.log(`Level: ${levelIndex}`)
         if (levelIndex === 0) {
+            console.log("starting")
             const utter = new window.SpeechSynthesisUtterance(introText1);
             window.speechSynthesis.speak(utter);
-            const timer = start(2000, 3000, 13500, true)
+            const timer = start(2000, 3000, 13500, 8000, false);
             setTimeout(() => { }, 5000);
 
             return () => {
@@ -141,9 +116,10 @@ const FruitFall = () => {
                 window.speechSynthesis.cancel();
             };
         } else {
-            start(1000, 1000, 2000, false)
+            console.log("continue");
+            start(1000, 1000, 2000, false);
         }
-    }, []);
+    }, [levelIndex]);
 
 
 
@@ -151,7 +127,7 @@ const FruitFall = () => {
         const timer = setTimeout(() => {
             setShowSecondParagraph(true);
             setTimeout(() => {
-                console.log("done speaking")
+                console.log("done speaking");
                 setStartGame(true);
                 setTimeout(() => {
                     setIsFruitsVisible(true);
@@ -186,7 +162,19 @@ const FruitFall = () => {
             ...prevCounts,
             [fruitName]: Math.max(0, prevCounts[fruitName] + amount) // Ensure count doesn't go below 0
         }));
-    };
+    }
+
+    useEffect(() => {
+        if (!startGame) return; // only show once game has started
+
+        setShowLevelText(true);
+
+        const timer = setTimeout(() => {
+            setShowLevelText(false); // hide after X ms
+        }, 3000); // 👈 3 seconds, adjust as you like
+
+        return () => clearTimeout(timer);
+    }, [levelIndex, startGame]);
 
     const loadLevel = (index) => {
         const level = levels[index];
@@ -318,7 +306,7 @@ const FruitFall = () => {
                                 {introText1}
                             </motion.p>
                         )}
-                        {(showSecondParagraph && showLevelText) && (
+                        {showSecondParagraph && (
                             <motion.p
                                 key="intro2"
                                 initial={{ opacity: 0 }}
@@ -330,7 +318,7 @@ const FruitFall = () => {
                             </motion.p>
                         )}
                     </motion.div> :
-                    <motion.p
+                    showLevelText && <motion.p
                         initial={{ opacity: 0, y: -50, scale: 0.8 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -20, scale: 0 }}
