@@ -76,7 +76,6 @@ const FruitFall = () => {
             setShowLevelText(true);
             setTimeout(() => {
                 setShowLevelText(false);
-
             }, 2000);
             setLevelIndex(levelIndex + 1);
             // Reset basket counts etc
@@ -110,7 +109,6 @@ const FruitFall = () => {
         const timer = setTimeout(() => {
             setShowSecondParagraph(true);
             setTimeout(() => {
-                console.log("done speaking")
                 setStartGame(true);
                 setTimeout(() => {
                     setIsFruitsVisible(true);
@@ -119,7 +117,7 @@ const FruitFall = () => {
                     }, 2000);
                 }, 3000);
             }, 13500);
-        }, 15000);
+        }, 5000);
 
         return () => {
             clearTimeout(timer);
@@ -133,12 +131,10 @@ const FruitFall = () => {
     // Speak the first paragraph on mount
     useEffect(() => {
         if (levelIndex === 0) {
-            console.log("speaking intro")
             const utter = new window.SpeechSynthesisUtterance(introText1);
             window.speechSynthesis.speak(utter);
             const timer = start(2000, 3000, 13500, true)
             setTimeout(() => { }, 5000);
-            console.log("started timer", timer);
 
             return () => {
                 clearTimeout(timer);
@@ -240,7 +236,7 @@ const FruitFall = () => {
                 // create flying fruits that animate into the basket
                 const idBase = Date.now();
                 // compute basket center relative to root container as target
-                const basketCenterX = rect.left + rect.width / 2 - rootRect.left;
+                const basketCenterX = rect.left + rect.width / 3 - rootRect.left;
                 const basketCenterY = rect.top + rect.height / 2 - rootRect.top;
                 // start the flying fruits slightly above the basket and spread them horizontally
                 const startBaseY = rect.top - rootRect.top - 60; // 60px above the top of the basket
@@ -431,7 +427,6 @@ const FruitFall = () => {
                     </button>
                 </motion.div>
             )}
-
 
             {isFruitsVisible && (
                 <motion.div
