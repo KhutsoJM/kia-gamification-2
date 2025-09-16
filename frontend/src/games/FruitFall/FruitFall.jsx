@@ -94,9 +94,11 @@ const FruitFall = () => {
 
     useEffect(() => {
         setShowLevelText(true);
+        console.log("showing next level")
         setTimeout(() => {
+            console.log("not showing next level")
             setShowLevelText(false);
-        }, true)
+        }, 2000)
         loadLevel(levelIndex);
     }, [levelIndex]);
 
